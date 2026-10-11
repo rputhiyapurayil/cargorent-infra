@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CarGoRent – Windows Setup Guide</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm; }
+  body { font-family: "Segoe UI", Helvetica, Arial, sans-serif; font-size: 10.5pt; line-height: 1.5; color: #1f2937; margin: 0; }
+  h1 { font-size: 22pt; color: #312e81; margin: 0 0 2pt; }
+  .sub { color: #6b7280; margin: 0 0 12pt; }
+  .lead { background: #eef2ff; border-left: 4px solid #4f46e5; padding: 8pt 12pt; margin: 0 0 14pt; }
+  h2 { font-size: 14pt; color: #312e81; border-bottom: 1px solid #e5e7eb; padding-bottom: 3pt; margin: 18pt 0 8pt; page-break-after: avoid; }
+  table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt; page-break-inside: avoid; }
+  th, td { border: 1px solid #d1d5db; padding: 5pt 7pt; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; font-weight: 600; }
+  code { font-family: Consolas, Menlo, monospace; font-size: 9.5pt; background: #f3f4f6; padding: 0 3px; border-radius: 3px; }
+  pre { font-family: Consolas, Menlo, monospace; font-size: 9pt; background: #111827; color: #f9fafb; padding: 8pt 10pt; border-radius: 5px; white-space: pre-wrap; page-break-inside: avoid; margin: 6pt 0 10pt; }
+  ol, ul { margin: 4pt 0 10pt; padding-left: 20pt; }
+  li { margin-bottom: 3pt; }
+  .note { color: #6b7280; font-size: 9.5pt; }
+  .box { border: 1px solid #fcd34d; background: #fffbeb; padding: 7pt 10pt; border-radius: 5px; margin: 6pt 0 10pt; }
+  a { color: #4338ca; }
+</style>
+</head>
+<body>
+
+<h1>CarGoRent – Windows Setup Guide</h1>
+<p class="sub">Vehicle Rental Management System · Mini project AY 2026-27 · 11 Oct 2026</p>
+
+<p class="lead">You need two programs (Git and Docker Desktop) and one command to run the whole CarGoRent system on your laptop. Plan about 45 minutes the first time, most of it downloads; after that it starts in under a minute.</p>
+
+<h2>Before you start</h2>
+<table>
+  <tr><th>Need</th><th>Minimum</th><th>Why</th></tr>
+  <tr><td>Windows</td><td>Windows 10 (22H2) or Windows 11, 64-bit</td><td>Docker Desktop needs WSL 2</td></tr>
+  <tr><td>Memory (RAM)</td><td>8 GB</td><td>The 8 containers use about 3.5 GB together</td></tr>
+  <tr><td>Free disk space</td><td>10 GB</td><td>Docker images (~4 GB) plus downloads</td></tr>
+  <tr><td>GitHub account</td><td>Invitation accepted</td><td>The code is in private repositories</td></tr>
+</table>
+<p><b>Accept the GitHub invitations.</b> Ramees adds your GitHub username to the 8 <code>cargorent-*</code> repositories. GitHub emails one invitation per repository; open each and click <b>Accept invitation</b> (or see them all at <a href="https://github.com/notifications">github.com/notifications</a>). Without this, downloading fails with <i>Repository not found</i>.</p>
+<p class="note">Do the first run on good Wi-Fi: it downloads about 2 GB.</p>
+
+<h2>Step 1 – Install Git for Windows</h2>
+<ol>
+  <li>Download Git from <a href="https://git-scm.com/download/win">git-scm.com/download/win</a> and run the installer.</li>
+  <li>Click <b>Next</b> on every screen; the defaults are fine. Keep <i>Git Credential Manager</i> selected (it handles the GitHub login).</li>
+  <li>Check: open <b>PowerShell</b> (Start menu → type PowerShell) and run <code>git --version</code>. You should see a version number.</li>
+</ol>
+
+<h2>Step 2 – Install Docker Desktop</h2>
+<p>Docker runs MySQL, the six Java services and the website for you, so you do not install Java, Maven, Node or MySQL.</p>
+<ol>
+  <li>Turn on WSL 2: right-click Start → <b>Terminal (Admin)</b> or <b>PowerShell (Admin)</b>, run <code>wsl --install</code>, then <b>restart</b> the laptop.</li>
+  <li>Download Docker Desktop from <a href="https://www.docker.com/products/docker-desktop/">docker.com/products/docker-desktop</a> and install it. Keep <b>Use WSL 2 instead of Hyper-V</b> ticked.</li>
+  <li>Restart if asked, open <b>Docker Desktop</b> and accept its terms. You can skip signing in.</li>
+  <li>Wait until the bottom-left corner says <b>Engine running</b> (green).</li>
+  <li>Check: in PowerShell run <code>docker compose version</code>.</li>
+</ol>
+
+<h2>Step 3 – Download the code</h2>
+<p>The project is 8 repositories that must sit <b>side by side in one folder</b>. Use a short path like <code>C:\cargorent</code> – not Desktop, Downloads or a OneDrive folder.</p>
+<p>Open <b>PowerShell</b> (normal, not Admin) and paste:</p>
+<pre>mkdir C:\cargorent
+cd C:\cargorent
+$repos = "infra","api-gateway","user-service","vehicle-service",
+         "booking-service","payment-service","notification-service","web"
+foreach ($r in $repos) { git clone "https://github.com/rputhiyapurayil/cargorent-$r.git" }</pre>
+<p>The first clone opens a browser window to sign in to GitHub; approve it once and the rest download on their own. Afterwards <code>dir C:\cargorent</code> lists 8 folders:</p>
+<pre>cargorent-api-gateway            cargorent-payment-service
+cargorent-booking-service        cargorent-user-service
+cargorent-infra                  cargorent-vehicle-service
+cargorent-notification-service   cargorent-web</pre>
+
+<h2>Step 4 – Start the app</h2>
+<p>Make sure Docker Desktop shows <b>Engine running</b>, then in PowerShell:</p>
+<pre>cd C:\cargorent\cargorent-infra
+docker compose up --build -d</pre>
+<p>The <b>first run takes 10–20 minutes</b> (it builds the six Java services and the website); later starts take under a minute. It is ready when this shows 8 containers running (MySQL <i>healthy</i>):</p>
+<pre>docker compose ps</pre>
+<p>Wait another 30 seconds after that for the Java services to finish starting.</p>
+
+<h2>Step 5 – Open it and log in</h2>
+<p>Open <b><a href="http://localhost:3000">http://localhost:3000</a></b> in Chrome or Edge.</p>
+<table>
+  <tr><th>Role</th><th>How to log in</th></tr>
+  <tr><td>Admin</td><td><code>admin@cargorent.com</code> / <code>Admin@123</code> – lands on the Admin Dashboard</td></tr>
+  <tr><td>Customer</td><td>Click <b>Sign up</b> and register any test account</td></tr>
+</table>
+<div class="box">Payments are in test mode – no real money moves. Card <code>4111 1111 1111 1111</code> (any future expiry, any CVV) succeeds; <code>4000 0000 0000 0002</code> is declined.</div>
+<p>Quick check of everything: register → search with dates → book → pay → log in as admin → approve → mark picked up → watch it move on Tracking → mark returned → Reports. The full demo script is in <code>cargorent-infra\README.md</code>.</p>
+
+<h2>Every day after that</h2>
+<p>Run these from <code>C:\cargorent\cargorent-infra</code>, with Docker Desktop open.</p>
+<table>
+  <tr><th>To</th><th>Command</th></tr>
+  <tr><td>Start</td><td><code>docker compose up -d</code></td></tr>
+  <tr><td>Stop (keeps your data)</td><td><code>docker compose down</code></td></tr>
+  <tr><td>See what is running</td><td><code>docker compose ps</code></td></tr>
+  <tr><td>See a service's log</td><td><code>docker compose logs -f booking-service</code></td></tr>
+  <tr><td>Wipe all data and start fresh</td><td><code>docker compose down -v</code> then <code>docker compose up -d</code></td></tr>
+</table>
+<p>Get the latest code after someone pushes changes:</p>
+<pre>cd C:\cargorent
+foreach ($r in (dir -Directory cargorent-*)) { git -C $r.FullName pull }
+cd cargorent-infra
+docker compose up --build -d</pre>
+
+<h2>View the database (MySQL Workbench)</h2>
+<p>The app must be running. MySQL is on port <b>3307</b> (not 3306, so it never clashes with XAMPP).</p>
+<ol>
+  <li>Install MySQL Workbench from <a href="https://dev.mysql.com/downloads/workbench/">dev.mysql.com/downloads/workbench</a> (choose <i>No thanks, just start my download</i>).</li>
+  <li>Click <b>+</b> next to <i>MySQL Connections</i> and fill in the table below.</li>
+  <li><b>Test Connection</b> → OK → open the connection.</li>
+  <li>In <i>Schemas</i>, expand a database → Tables → right-click a table → <b>Select Rows</b>.</li>
+</ol>
+<table>
+  <tr><th>Field</th><th>Value</th></tr>
+  <tr><td>Hostname</td><td><code>127.0.0.1</code></td></tr>
+  <tr><td>Port</td><td><code>3307</code></td></tr>
+  <tr><td>Username</td><td><code>cargorent</code> (or <code>root</code> for full admin rights)</td></tr>
+  <tr><td>Password</td><td>Store in Vault… → <code>cargorent</code> (or <code>root</code>)</td></tr>
+</table>
+<table>
+  <tr><th>Schema</th><th>Tables</th></tr>
+  <tr><td><code>cargorent_users</code></td><td>users</td></tr>
+  <tr><td><code>cargorent_vehicles</code></td><td>vehicles, vehicle_locations</td></tr>
+  <tr><td><code>cargorent_bookings</code></td><td>bookings</td></tr>
+  <tr><td><code>cargorent_payments</code></td><td>payments</td></tr>
+  <tr><td><code>cargorent_notifications</code></td><td>notifications</td></tr>
+</table>
+<pre>SELECT id, customer_name, vehicle_name, start_date, end_date, status, total_amount
+FROM cargorent_bookings.bookings
+ORDER BY id DESC;</pre>
+<p class="note">Don't rename or drop columns by hand – the services check the tables at startup. Leave each schema's <code>flyway_schema_history</code> table alone.</p>
+
+<h2>Working on the code (optional)</h2>
+<p><b>Frontend.</b> Install <a href="https://nodejs.org/">Node.js 20 LTS</a>, then:</p>
+<pre>cd C:\cargorent\cargorent-web
+npm install
+npm run dev</pre>
+<p>Open <a href="http://localhost:5173">http://localhost:5173</a>; it uses the Docker backend and reloads as you save.</p>
+<p><b>A Java service.</b> Edit it in IntelliJ IDEA or VS Code, then rebuild just that service (use its name: user-service, vehicle-service, booking-service, payment-service, notification-service or api-gateway):</p>
+<pre>cd C:\cargorent\cargorent-infra
+docker compose up --build -d booking-service</pre>
+<ul>
+  <li><b>Unit tests:</b> need JDK 21 and Maven – run <code>mvn test</code> inside the service folder.</li>
+  <li><b>Swagger UI:</b> <a href="http://localhost:8081/swagger-ui.html">localhost:8081/swagger-ui.html</a> … <a href="http://localhost:8085/swagger-ui.html">localhost:8085</a>. Add headers <code>X-User-Id: 1</code> and <code>X-User-Role: ADMIN</code> to act as admin.</li>
+  <li><b>Postman:</b> import <code>cargorent-infra\postman\CarGoRent.postman_collection.json</code> and run it top to bottom.</li>
+  <li><b>Sharing changes:</b> in the folder you edited: <code>git add -A</code>, <code>git commit -m "what you changed"</code>, <code>git push</code>.</li>
+</ul>
+
+<h2>Troubleshooting</h2>
+<table>
+  <tr><th style="width:38%">Problem</th><th>Fix</th></tr>
+  <tr><td><code>git clone</code> says <i>Repository not found</i></td><td>Accept the GitHub invitation for that repository and sign in as the invited account, then clone again.</td></tr>
+  <tr><td><code>docker</code> not recognized, or <i>cannot connect to the Docker daemon</i></td><td>Open Docker Desktop and wait for <b>Engine running</b>. Close and reopen PowerShell after installing.</td></tr>
+  <tr><td><i>Virtualization not enabled</i> or a WSL error</td><td>Run <code>wsl --update</code> in an Admin PowerShell and restart. If it persists, enable Virtualization (Intel VT-x / AMD-V) in the BIOS.</td></tr>
+  <tr><td><i>port is already allocated</i> (3000, 8080 or 3307)</td><td>Stop XAMPP/Tomcat, or create <code>cargorent-infra\.env</code> with <code>WEB_PORT=3001</code>, <code>GATEWAY_PORT=8090</code>, <code>MYSQL_PORT=3308</code>, then <code>docker compose up -d</code>.</td></tr>
+  <tr><td>Website shows <i>Cannot reach the server</i></td><td>Services still starting – wait a minute and refresh; check <code>docker compose ps</code>.</td></tr>
+  <tr><td>A container keeps restarting</td><td><code>docker compose logs &lt;service-name&gt;</code> shows why; usually low memory – close apps or raise memory in Docker Desktop → Settings → Resources.</td></tr>
+  <tr><td>First build very slow or fails on download</td><td>Normal on slow Wi-Fi. Run <code>docker compose up --build -d</code> again; finished parts are reused.</td></tr>
+  <tr><td>Workbench: <i>Can't connect to MySQL server on 127.0.0.1:3307</i></td><td>Start the app first and check MySQL is <i>healthy</i> in <code>docker compose ps</code>. Use 127.0.0.1, not localhost.</td></tr>
+  <tr><td>Admin login fails / want a clean demo</td><td><code>docker compose down -v</code> then <code>docker compose up -d</code> (erases all data, recreates the admin and 14 seeded vehicles).</td></tr>
+</table>
+<p class="note">Still stuck? Send Ramees a screenshot of the error and the output of <code>docker compose ps</code>.</p>
+
+</body>
+</html>
