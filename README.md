@@ -58,6 +58,8 @@ Unpaid bookings are cancelled automatically after 30 minutes so they do not bloc
 
 ## Running it
 
+> **On Windows?** Follow the step-by-step [Windows setup guide](SETUP-WINDOWS.md).
+
 Clone all eight repos **side by side** in one folder:
 
 ```
