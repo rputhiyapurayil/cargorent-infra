@@ -75,6 +75,30 @@ cd cargorent-infra
 docker compose up --build -d
 ```
 
+## View the database (MySQL Workbench)
+
+The Docker MySQL is published on port **3307** (not 3306, so it never clashes with XAMPP).
+The app must be running (`docker compose up -d`).
+
+1. Install MySQL Workbench from https://dev.mysql.com/downloads/workbench/ (skip the Oracle sign-in: "No thanks, just start my download").
+2. Click **+** next to *MySQL Connections* and fill in:
+
+| Field | Value |
+|---|---|
+| Connection Name | CarGoRent (Docker) |
+| Hostname | `127.0.0.1` |
+| Port | `3307` |
+| Username | `cargorent` (or `root` for full admin) |
+| Password | **Store in Vault…** → `cargorent` (or `root`) |
+
+3. **Test Connection** → OK → open it. The *Schemas* panel shows the 5 service databases:
+   `cargorent_users`, `cargorent_vehicles`, `cargorent_bookings`, `cargorent_payments`, `cargorent_notifications`.
+4. Example query: `SELECT id, vehicle_name, start_date, end_date, status, total_amount FROM cargorent_bookings.bookings ORDER BY id DESC;`
+
+Tips: tables are created by Flyway – don't rename columns by hand (the services will refuse to start).
+`flyway_schema_history` in each schema is Flyway's own record; leave it alone.
+Port 3307 busy? Set `MYSQL_PORT=3308` in `cargorent-infra\.env` and use that port in Workbench.
+
 ## Working on the code (optional)
 
 - **Frontend:** install Node.js 20 LTS, then `cd C:\cargorent\cargorent-web`, `npm install`, `npm run dev` → http://localhost:5173 (uses the Docker backend, reloads on save).
@@ -95,4 +119,5 @@ docker compose up --build -d
 | Website says *Cannot reach the server* | Services still starting: wait a minute, check `docker compose ps`. |
 | Container keeps restarting | `docker compose logs <service>`; usually low memory – close apps or raise Docker memory. |
 | Slow or failed first build | Run `docker compose up --build -d` again; finished parts are reused. |
+| Workbench: *Can't connect to MySQL server on 127.0.0.1:3307* | Start the app first (`docker compose up -d`) and check `docker compose ps` shows MySQL healthy. Use `127.0.0.1`, not `localhost`. |
 | Admin login fails / want a clean demo | `docker compose down -v`, then `docker compose up -d`. |

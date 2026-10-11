@@ -33,7 +33,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Kolkata
-    # No host port: services reach MySQL on the Docker network, so a local MySQL/XAMPP on 3306 does not clash.
+    # Published on 3307 (not 3306) so it does not clash with a local MySQL/XAMPP.
+    # Connect from MySQL Workbench: 127.0.0.1:3307, user cargorent / cargorent (or root / root).
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3307}:3306"
     volumes:
       - mysql-data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d:ro

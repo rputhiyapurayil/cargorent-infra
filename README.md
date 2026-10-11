@@ -104,6 +104,7 @@ runs via `docker compose -f docker-compose.mysql.yml up -d`.
 |------|-----|
 | Web app | http://localhost:5173 (local) / http://localhost:3000 (Docker) |
 | API gateway | http://localhost:8080/api/... |
+| MySQL (Workbench, DBeaver…) | `127.0.0.1:3307`, user `cargorent` / `cargorent` (or `root` / `root`) |
 | Swagger UI (each service) | http://localhost:8081/swagger-ui.html … http://localhost:8085/swagger-ui.html |
 
 When calling a service directly in Swagger, add the headers `X-User-Id` and `X-User-Role`
