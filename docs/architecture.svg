@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4f46e5"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="700" fill="#ffffff"/>
+  <text x="550" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#111827">CarGoRent – Microservice Architecture</text>
+
+  <!-- Users -->
+  <g font-size="14" text-anchor="middle">
+    <rect x="300" y="62" width="200" height="44" rx="22" fill="#f1f5f9" stroke="#94a3b8"/>
+    <text x="400" y="89" fill="#1f2937" font-weight="600">Customer</text>
+    <rect x="600" y="62" width="200" height="44" rx="22" fill="#f1f5f9" stroke="#94a3b8"/>
+    <text x="700" y="89" fill="#1f2937" font-weight="600">Admin</text>
+  </g>
+  <line x1="400" y1="106" x2="500" y2="140" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="700" y1="106" x2="600" y2="140" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Frontend -->
+  <rect x="330" y="142" width="440" height="58" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+  <text x="550" y="167" text-anchor="middle" font-size="16" font-weight="700" fill="#0c4a6e">cargorent-web  (React + Vite)</text>
+  <text x="550" y="188" text-anchor="middle" font-size="12.5" fill="#075985">Search · Booking · Payment · Tracking map · Notifications · Admin panel</text>
+  <line x1="550" y1="200" x2="550" y2="236" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="562" y="223" font-size="12" fill="#475569">HTTPS /api/**  +  JWT</text>
+
+  <!-- Gateway -->
+  <rect x="250" y="238" width="600" height="64" rx="10" fill="#ede9fe" stroke="#4f46e5" stroke-width="2.5"/>
+  <text x="550" y="264" text-anchor="middle" font-size="16" font-weight="700" fill="#312e81">cargorent-api-gateway  :8080  (Spring Cloud Gateway)</text>
+  <text x="550" y="286" text-anchor="middle" font-size="12.5" fill="#3730a3">Routing · CORS · JWT validation → X-User-Id / X-User-Role headers · blocks internal routes</text>
+
+  <!-- Gateway to services -->
+  <g stroke="#475569" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="330" y1="302" x2="120" y2="372"/>
+    <line x1="440" y1="302" x2="330" y2="372"/>
+    <line x1="550" y1="302" x2="550" y2="372"/>
+    <line x1="660" y1="302" x2="770" y2="372"/>
+    <line x1="770" y1="302" x2="980" y2="372"/>
+  </g>
+
+  <!-- Services -->
+  <g font-size="12" text-anchor="middle">
+    <rect x="30" y="374" width="190" height="112" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="125" y="398" font-size="14.5" font-weight="700" fill="#064e3b">User Service</text>
+    <text x="125" y="416" fill="#047857">:8081</text>
+    <text x="125" y="438" fill="#1f2937">Register · Login</text>
+    <text x="125" y="455" fill="#1f2937">JWT issue · Profiles</text>
+    <text x="125" y="472" fill="#1f2937">Roles</text>
+
+    <rect x="240" y="374" width="190" height="112" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="335" y="398" font-size="14.5" font-weight="700" fill="#064e3b">Vehicle Service</text>
+    <text x="335" y="416" fill="#047857">:8082</text>
+    <text x="335" y="438" fill="#1f2937">Vehicles · Search</text>
+    <text x="335" y="455" fill="#1f2937">GPS simulator · Tracking</text>
+    <text x="335" y="472" fill="#1f2937">Recommendations</text>
+
+    <rect x="455" y="374" width="190" height="112" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="550" y="398" font-size="14.5" font-weight="700" fill="#064e3b">Booking Service</text>
+    <text x="550" y="416" fill="#047857">:8083</text>
+    <text x="550" y="438" fill="#1f2937">Availability · Pricing</text>
+    <text x="550" y="455" fill="#1f2937">Approve · Pickup · Return</text>
+    <text x="550" y="472" fill="#1f2937">History · Reports</text>
+
+    <rect x="670" y="374" width="190" height="112" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="765" y="398" font-size="14.5" font-weight="700" fill="#064e3b">Payment Service</text>
+    <text x="765" y="416" fill="#047857">:8084</text>
+    <text x="765" y="438" fill="#1f2937">Test-mode gateway</text>
+    <text x="765" y="455" fill="#1f2937">Card · UPI · Net banking</text>
+    <text x="765" y="472" fill="#1f2937">Receipts</text>
+
+    <rect x="880" y="374" width="190" height="112" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="975" y="398" font-size="14.5" font-weight="700" fill="#064e3b">Notification Service</text>
+    <text x="975" y="416" fill="#047857">:8085</text>
+    <text x="975" y="438" fill="#1f2937">In-app notifications</text>
+    <text x="975" y="455" fill="#1f2937">Reminder scheduler</text>
+    <text x="975" y="472" fill="#1f2937">(pickup / return)</text>
+  </g>
+
+  <!-- Internal REST calls -->
+  <g stroke="#4f46e5" stroke-width="1.8" stroke-dasharray="6 4" fill="none" marker-end="url(#arrowB)">
+    <path d="M455,430 L432,430"/>
+    <path d="M670,430 L647,430"/>
+    <path d="M610,486 C650,545 930,545 950,490"/>
+  </g>
+  <g font-size="11" fill="#4338ca" text-anchor="middle">
+    <text x="443" y="370">↔ REST</text>
+    <text x="658" y="370">→ REST</text>
+    
+  </g>
+
+  <!-- DB -->
+  <g stroke="#475569" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="125" y1="486" x2="200" y2="560"/>
+    <line x1="335" y1="486" x2="360" y2="560"/>
+    <line x1="550" y1="486" x2="550" y2="560"/>
+    <line x1="765" y1="486" x2="740" y2="560"/>
+    <line x1="975" y1="486" x2="900" y2="560"/>
+  </g>
+  <rect x="120" y="562" width="860" height="104" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="550" y="588" text-anchor="middle" font-size="16" font-weight="700" fill="#7c2d12">MySQL 8  –  one schema per service</text>
+  <g font-size="12.5" text-anchor="middle" fill="#9a3412">
+    <rect x="140" y="604" width="150" height="44" rx="8" fill="#ffedd5"/><text x="215" y="623">cargorent_users</text><text x="215" y="640" font-size="11">users</text>
+    <rect x="305" y="604" width="150" height="44" rx="8" fill="#ffedd5"/><text x="380" y="623">cargorent_vehicles</text><text x="380" y="640" font-size="11">vehicles, vehicle_locations</text>
+    <rect x="470" y="604" width="150" height="44" rx="8" fill="#ffedd5"/><text x="545" y="623">cargorent_bookings</text><text x="545" y="640" font-size="11">bookings</text>
+    <rect x="635" y="604" width="150" height="44" rx="8" fill="#ffedd5"/><text x="710" y="623">cargorent_payments</text><text x="710" y="640" font-size="11">payments</text>
+    <rect x="800" y="604" width="160" height="44" rx="8" fill="#ffedd5"/><text x="880" y="623">cargorent_notifications</text><text x="880" y="640" font-size="11">notifications</text>
+  </g>
+  <text x="550" y="688" text-anchor="middle" font-size="12" fill="#4338ca">- - ▶  internal REST calls: booking → vehicle · payment → booking · booking → notification (and reminders read upcoming bookings)</text>
+</svg>

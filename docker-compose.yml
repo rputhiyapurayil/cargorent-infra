@@ -1,0 +1,99 @@
+# Full CarGoRent stack. Expects all repos cloned side by side:
+#   cargorent/
+#     cargorent-infra/  (this folder)
+#     cargorent-api-gateway/  cargorent-user-service/  cargorent-vehicle-service/
+#     cargorent-booking-service/  cargorent-payment-service/  cargorent-notification-service/  cargorent-web/
+#
+#   docker compose up --build      ->  open http://localhost:3000
+#
+# Only the web app (3000) and the gateway (8080) are meant for users. Service ports are
+# published on 127.0.0.1 so you can open each service's Swagger UI during the demo.
+
+x-service-env: &service-env
+  DB_HOST: mysql
+  DB_USER: cargorent
+  DB_PASSWORD: cargorent
+  TZ: Asia/Kolkata
+  USER_SERVICE_URL: http://user-service:8081
+  VEHICLE_SERVICE_URL: http://vehicle-service:8082
+  BOOKING_SERVICE_URL: http://booking-service:8083
+  PAYMENT_SERVICE_URL: http://payment-service:8084
+  NOTIFICATION_SERVICE_URL: http://notification-service:8085
+  JWT_SECRET: ${JWT_SECRET:-cargorent-dev-secret-change-me-please-32chars-min}
+
+x-depends-db: &depends-db
+  mysql:
+    condition: service_healthy
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: cargorent-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Kolkata
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  user-service:
+    build: ../cargorent-user-service
+    environment:
+      <<: *service-env
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@cargorent.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@123}
+    ports: ["127.0.0.1:8081:8081"]
+    depends_on: *depends-db
+
+  vehicle-service:
+    build: ../cargorent-vehicle-service
+    environment: *service-env
+    ports: ["127.0.0.1:8082:8082"]
+    depends_on: *depends-db
+
+  booking-service:
+    build: ../cargorent-booking-service
+    environment: *service-env
+    ports: ["127.0.0.1:8083:8083"]
+    depends_on: *depends-db
+
+  payment-service:
+    build: ../cargorent-payment-service
+    environment: *service-env
+    ports: ["127.0.0.1:8084:8084"]
+    depends_on: *depends-db
+
+  notification-service:
+    build: ../cargorent-notification-service
+    environment: *service-env
+    ports: ["127.0.0.1:8085:8085"]
+    depends_on: *depends-db
+
+  api-gateway:
+    build: ../cargorent-api-gateway
+    environment:
+      <<: *service-env
+      FRONTEND_ORIGIN: http://localhost:3000
+    ports: ["8080:8080"]
+    depends_on:
+      - user-service
+      - vehicle-service
+      - booking-service
+      - payment-service
+      - notification-service
+
+  web:
+    build: ../cargorent-web
+    ports: ["3000:80"]
+    depends_on:
+      - api-gateway
+
+volumes:
+  mysql-data:
